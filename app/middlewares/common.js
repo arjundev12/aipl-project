@@ -5,11 +5,11 @@
 // const constant = require('../utilities/constants')
 // // console.log("api key1111", process.env.SENDGRID_API_KEY1)
 // sgMail.setApiKey(process.env.SENDGRID_API_KEY1)
-// const base64Img = require('base64-img')
-// var jwt = require('jsonwebtoken');
+const base64Img = require('base64-img')
+var sharp = require('sharp');
 
 // const nodemailer = require('nodemailer');
-// const fs = require('fs');
+const fs = require('fs');
 // const transactionModel = require('../models/transactions');
 
 class Common {
@@ -21,8 +21,8 @@ class Common {
             // _sendMail: this._sendMail.bind(this),
             // _uploadBase64Profile: this._uploadBase64Profile.bind(this),
             // _createHistory: this._createHistory.bind(this),
-            // _updateRank: this._updateRank.bind(this),
-            // _getAllRank: this._getAllRank.bind(this)
+            _uploadBase64image: this._uploadBase64image.bind(this),
+            _validateBase64: this._validateBase64.bind(this)
         }
     }
 
