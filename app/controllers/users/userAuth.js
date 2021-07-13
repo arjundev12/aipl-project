@@ -56,7 +56,7 @@ class users {
             let stoken
             let error
             let getUser
-            let { name, email,profile_pic,device_type, contact_number,gender,address,DOB,social_id,password, social_type, } = req.body
+            let { name, email,profile_pic,state,country,pin,country_code,device_type, contact_number,gender,address,DOB,social_id,password, social_type, } = req.body
             if (social_type == 'manual') {
                 getUser = await UsersModel.findOne({ $and: [{ $or: [{email: email},{ contact_number: contact_number }] }, { social_type: social_type }, { user_type: 'user' }] })
                 // console.log("getUser", getUser)
@@ -79,6 +79,10 @@ class users {
                         contact_number: contact_number,
                         gender: gender,
                         address: address,
+                        country_code: country_code,
+                        pin: pin,
+                        state: state,
+                        country: country,
                         DOB: DOB,
                         social_id: "",
                         social_type: social_type,
@@ -105,6 +109,10 @@ class users {
                         contact_number: contact_number,
                         gender: gender,
                         address: address,
+                        country_code: country_code,
+                        pin: pin,
+                        state: state,
+                        country: country,
                         DOB: DOB,
                         social_id: social_id,
                         social_type: social_type,

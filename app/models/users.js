@@ -34,6 +34,26 @@ var UsersSchema = new Schema({
     trim: true,
     default:""
   },
+  state: {
+    type: String,
+    trim: true,
+    default:""
+  },
+  country: {
+    type: String,
+    trim: true,
+    default:""
+  },
+  pin: {
+    type: String,
+    trim: true,
+    default:""
+  },
+  country_code: {
+    type: String,
+    trim: true,
+    default:""
+  },
   DOB: {
     type: String,
     trim: true,
