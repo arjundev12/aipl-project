@@ -39,7 +39,7 @@ class FrontEntValidator {
         // return next();
         // console.log("request.body", req.body)
         if (req.body.social_type== 'manual'){
-            if (Object.keys(req.body).length <= 12) {
+            if (Object.keys(req.body).length <= 16) {
                 req.checkBody({
                     name: {
                         notEmpty: true,
@@ -69,7 +69,7 @@ class FrontEntValidator {
             res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
         }
         }else{
-            if (Object.keys(req.body).length <= 12) {
+            if (Object.keys(req.body).length <= 16) {
                 req.checkBody({
                     name: {
                         notEmpty: true,
