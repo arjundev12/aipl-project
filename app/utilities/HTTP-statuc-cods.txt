@@ -1,0 +1,61 @@
+1. 200 OK - Response to a successful GET, PUT, PATCH or DELETE. Can also be used for a POST that doesn't result in a creation.
+2. 201 Created - Response to a POST that results in a creation. Should be combined with a Location header pointing to the location of the new resource
+3. 204 No Content - Response to a successful request that won't be returning a body (like a DELETE request)
+4. 304 Not Modified - Used when HTTP caching headers are in play
+5. 400 Bad Request - The request is malformed, such as if the body does not parse
+6. 401 Unauthorized - When no or invalid authentication details are provided. Also useful to trigger an auth popup if the API is used from a browser
+7. 403 Forbidden - When authentication succeeded but authenticated user doesn't have access to the resource
+8. 404 Not Found - When a non-existent resource is requested
+9. 405 Method Not Allowed - When an HTTP method is being requested that isn't allowed for the authenticated user
+10. 410 Gone - Indicates that the resource at this end point is no longer available. Useful as a blanket response for old API versions
+11. 415 Unsupported Media Type - If incorrect content type was provided as part of the request
+12. 422 Unprocessable Entity - Used for validation errors
+13. 429 Too Many Requests - When a request is rejected due to rate limiting
+
+
+
+
+success response-
+{
+    "code": 200,
+    "success": true,
+    "message": "User logged in successfully",
+    "data": null
+}
+
+{
+    "code": 200,
+    "success": true,
+    "message": "User logged in successfully",
+    "data": { 
+        "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxNTA3ODUyOSwiZW1haWwiOiJhcmp1bi5zaW5naEBtYWRzdGVjaC5jb20iLCJpYXQiOjE1ODczNjAwMDcsImV4cCI6MTU4Nzk2NDgwN30.07biJDwLkn9mHqkK0TLTyfzbdUVofsRPutP0T1QTRRQ"
+    }
+}
+
+
+with description-
+{
+    "code" : 1234,
+    "message" : "Something bad happened :(",
+    "description" : "More details about the error here"
+}
+
+
+errors-
+{
+    "code" : 200,
+    "success": false,
+    "message" : "Validation Failed",
+    "errors" : [
+        {
+            "code" : 5432,
+            "field" : "first_name",
+            "message" : "First name cannot have fancy characters"
+        },
+        {
+            "code" : 5622,
+            "field" : "password",
+            "message" : "Password cannot be blank"
+        }
+    ]
+}
