@@ -6,6 +6,10 @@ var UsersSchema = new Schema({
     type: String,
     trim: true
   },
+  user_id:{
+    type: String,
+    trim: true
+  },
   profile_pic: {
     type: String,
     trim: true,

@@ -56,9 +56,9 @@ class users {
             let stoken
             let error
             let getUser
-            let { name, email,profile_pic,state,country,pin,country_code,device_type, contact_number,gender,address,DOB,social_id,password, social_type, } = req.body
+            let { name, email,profile_pic,state,country,pin,country_code,device_type, contact_number,gender,address,DOB,social_id,password, social_type,user_id } = req.body
             if (social_type == 'manual') {
-                getUser = await UsersModel.findOne({ $and: [{ $or: [{email: email},{ contact_number: contact_number }] }, { social_type: social_type }, { user_type: 'user' }] })
+                getUser = await UsersModel.findOne({ $and: [{ user_id: user_id }, { social_type: social_type }, { user_type: 'user' }] })
                 // console.log("getUser", getUser)
                 if (getUser) {
                     error = true
@@ -73,6 +73,7 @@ class users {
                     const hash = bcrypt.hashSync(password, salt);
                     saveData = new UsersModel({
                         name: name,
+                        user_id: user_id,
                         profile_pic: imagePath,
                         email: email,
                         password: hash,
@@ -91,7 +92,7 @@ class users {
                     data = await saveData.save();
                 }
             } else{
-                getUser = await UsersModel.findOne({ $and: [{ email: email }, { SocialType: SocialType }, { user_type: 'user' }] })
+                getUser = await UsersModel.findOne({ $and: [{ user_id: user_id }, { SocialType: SocialType }, { user_type: 'user' }] })
                 if (getUser) {
                     data = getUser
                 } else {
@@ -105,6 +106,7 @@ class users {
                     saveData = new UsersModel({
                         name: name,
                         profile_pic: imagePath,
+                        user_id: user_id,
                         email: email,
                         contact_number: contact_number,
                         gender: gender,
@@ -124,14 +126,14 @@ class users {
             if (data && !_.isEmpty(data) ) {
                 stoken = {
                     _id: data._id,
-                    email: data.email
+                    user_id: data.user_id
                 }
                 // data.token
                 console.log("dataatatat",data)
                 let token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
                 return res.json({ code: 200, success: true, message: 'Data save successfully', data: token })
             } else if (error) {
-                res.json({ code: 404, success: false, message: 'Email/Number already exist', data: {email: getUser.email, contact_number: getUser.contact_number} })
+                res.json({ code: 404, success: false, message: 'Email/Number already exist', data: getUser.user_id })
             } else {
                 res.json({ success: false, message: "Somthing went wrong", })
             }
@@ -144,8 +146,17 @@ class users {
     }
     async login(req, res) {
         try {
-            let { email,contact_number, password } = req.body
-            let getUser = await UsersModel.findOne({ $and: [{ $or: [{email: email},{ contact_number: contact_number }] }, { social_type: 'manual' }, { user_type: 'user' }] }).lean()
+            let { user_id,contact_number, password } = req.body
+            let getUser = await UsersModel.findOne({ $and: [{user_id: user_id}, { social_type: 'manual' }, { user_type: 'user' }] },
+            {
+                address:1,
+                user_id:1,
+                device_type: 1,
+                name:1,
+                profile_pic:1,
+                block_user:1,
+                password:1
+            }).lean()
            if (getUser ) {
             if(getUser.block_user =='1'){
                 return res.json({ code: 404, success: false, message: 'User is blocked by admin', })
@@ -154,7 +165,7 @@ class users {
                 if (verifypass) {
                     let stoken = {
                         _id: getUser._id,
-                        email: getUser.email
+                        user_id: getUser.user_id
                     }
                     getUser.token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
                     // if(getUser.profile_pic !=""){

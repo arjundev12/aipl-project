@@ -41,13 +41,9 @@ class FrontEntValidator {
         if (req.body.social_type== 'manual'){
             if (Object.keys(req.body).length <= 16) {
                 req.checkBody({
-                    name: {
+                    user_id: {
                         notEmpty: true,
-                        errorMessage: { "field_name": "name", "error_msg": 'name is required' },
-                    },
-                    email: {
-                        notEmpty: true,
-                        errorMessage: { "field_name": "name", "error_msg": 'email is required' },
+                        errorMessage: { "field_name": "user_id", "error_msg": 'number/email is required' },
                     },
                     password: {
                         notEmpty: true,
@@ -218,9 +214,9 @@ class FrontEntValidator {
         // return next();
         if (Object.keys(req.body).length <=4) {
                 req.checkBody({
-                    email: {
+                    user_id: {
                         notEmpty: true,
-                        errorMessage: { "field_name": "email", "error_msg": 'email is required' },
+                        errorMessage: { "field_name": "user_id", "error_msg": 'user_id is required' },
                     },
                     password: {
                         notEmpty: true,
