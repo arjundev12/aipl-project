@@ -17,7 +17,8 @@ var UsersSchema = new Schema({
   email: {
     type: String,
     trim: true,
-    require: true
+    default: ""
+    // require: true
   },
   password: {
     type: String,

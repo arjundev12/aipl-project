@@ -11,7 +11,8 @@ class users {
             signUp: this.signUp.bind(this),
             verifyOtp: this.verifyOtp.bind(this),
             login: this.login.bind(this),
-            
+            updateProfile: this.updateProfile.bind(this)
+
         }
     }
 
@@ -56,7 +57,7 @@ class users {
             let stoken
             let error
             let getUser
-            let { name, email,profile_pic,state,country,pin,country_code,device_type, contact_number,gender,address,DOB,social_id,password, social_type,user_id } = req.body
+            let { name, email, profile_pic, state, country, pin, country_code, device_type, contact_number, gender, address, DOB, social_id, password, social_type, user_id } = req.body
             if (social_type == 'manual') {
                 getUser = await UsersModel.findOne({ $and: [{ user_id: user_id }, { social_type: social_type }, { user_type: 'user' }] })
                 // console.log("getUser", getUser)
@@ -67,8 +68,8 @@ class users {
                     if (profile_pic && profile_pic != "") {
                         let data = await commenFunction._uploadBase64image(profile_pic, 'ProfileImage')
                         imagePath = data.replace(/\\/g, "/");
-                    } 
-        
+                    }
+
                     const salt = bcrypt.genSaltSync(10);
                     const hash = bcrypt.hashSync(password, salt);
                     saveData = new UsersModel({
@@ -91,7 +92,7 @@ class users {
                     })
                     data = await saveData.save();
                 }
-            } else{
+            } else {
                 getUser = await UsersModel.findOne({ $and: [{ user_id: user_id }, { SocialType: SocialType }, { user_type: 'user' }] })
                 if (getUser) {
                     data = getUser
@@ -100,7 +101,7 @@ class users {
                     if (profile_pic && profile_pic != "") {
                         let data = await commenFunction._uploadBase64image(profile_pic, 'ProfileImage')
                         imagePath = data.replace(/\\/g, "/");
-                    } 
+                    }
                     // const salt = bcrypt.genSaltSync(10);
                     // const hash = bcrypt.hashSync(password, salt);
                     saveData = new UsersModel({
@@ -123,15 +124,18 @@ class users {
                     data = await saveData.save();
                 }
             }
-            if (data && !_.isEmpty(data) ) {
+            if (data && !_.isEmpty(data)) {
                 stoken = {
                     _id: data._id,
                     user_id: data.user_id
                 }
-                // data.token
-                console.log("dataatatat",data)
-                let token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
-                return res.json({ code: 200, success: true, message: 'Data save successfully', data: token })
+
+                console.log("dataatatat", data)
+                // let token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
+                let data1 = {}
+                data1.token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
+                data1.dictionary = data
+                return res.json({ code: 200, success: true, message: 'Data save successfully', data: data1 })
             } else if (error) {
                 res.json({ code: 404, success: false, message: 'Email/Number already exist', data: getUser.user_id })
             } else {
@@ -146,41 +150,70 @@ class users {
     }
     async login(req, res) {
         try {
-            let { user_id,contact_number, password } = req.body
-            let getUser = await UsersModel.findOne({ $and: [{user_id: user_id}, { social_type: 'manual' }, { user_type: 'user' }] },
-            {
-                address:1,
-                user_id:1,
-                device_type: 1,
-                name:1,
-                profile_pic:1,
-                block_user:1,
-                password:1
-            }).lean()
-           if (getUser ) {
-            if(getUser.block_user =='1'){
-                return res.json({ code: 404, success: false, message: 'User is blocked by admin', })
-             }else {
-                let verifypass = await bcrypt.compareSync(password, getUser.password);
-                if (verifypass) {
-                    let stoken = {
-                        _id: getUser._id,
-                        user_id: getUser.user_id
-                    }
-                    getUser.token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
-                    // if(getUser.profile_pic !=""){
-                    //     getUser.imageUrl = Constants.imageUrl + getUser.profile_pic
-                    // }else{
-                    //     getUser.imageUrl = Constants.imageUrl + Constants.defaultImge
-                    // }
-                    // let imagenew = 
-                    // getUser.imageUrl = Constants.imageUrl + getUser.profile_pic != ""?getUser.profile_pic :  Constants.defaultImge
-                    res.json({ code: 200, success: true, message: 'login successfully', data: getUser })
+            let { user_id, contact_number, password } = req.body
+            let getUser = await UsersModel.findOne({ $and: [{ user_id: user_id }, { social_type: 'manual' }, { user_type: 'user' }] }).lean()
+            if (getUser) {
+                if (getUser.block_user == '1') {
+                    return res.json({ code: 404, success: false, message: 'User is blocked by admin', })
                 } else {
-                    res.json({ code: 404, success: false, message: 'invalid password', })
+                    let verifypass = await bcrypt.compareSync(password, getUser.password);
+                    if (verifypass) {
+                        let stoken = {
+                            _id: getUser._id,
+                            user_id: getUser.user_id
+                        }
+                        // getUser.token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
+                        let data1 = {}
+                        data1.token = await jwt.sign(stoken, process.env.SUPERSECRET, { expiresIn: '7d' });
+                        data1.dictionary = getUser
+                        res.json({ code: 200, success: true, message: 'login successfully', data: data1 })
+                    } else {
+                        res.json({ code: 404, success: false, message: 'invalid password', })
+                    }
                 }
-             }
-              
+
+            } else {
+                res.json({ code: 404, success: false, message: 'Email is not register', })
+            }
+        } catch (error) {
+            console.log("Error in catch", error)
+            res.json({ success: false, message: "Somthing went wrong", })
+        }
+    }
+    async updateProfile(req, res) {
+        try {
+            let { user_id, name, profile_pic, contact_number, gender, address, DOB, email, social_type } = req.body
+            let getUser = await UsersModel.findOne({ $and: [{ user_id: user_id }, { social_type: social_type }, { user_type: 'user' }] }).lean()
+            if (getUser) {
+                if (getUser.block_user == '1') {
+                    return res.json({ code: 404, success: false, message: 'User is blocked by admin', })
+                } else {
+                    if (name && name != "") {
+                        getUser.name = name
+                    }
+                    if (profile_pic && profile_pic != "") {
+                        let data = await commenFunction._uploadBase64image(profile_pic, 'ProfileImage')
+                        getUser.profile_pic = data.replace(/\\/g, "/");
+                    }
+                    if (contact_number && contact_number != "") {
+                        getUser.contact_number = contact_number
+                    }
+                    if (gender && gender != "") {
+                        getUser.gender = gender
+                    }
+                    if (address && address != "") {
+                        getUser.address = address
+                    }
+                    if (DOB && DOB != "") {
+                        getUser.DOB = DOB
+                    }
+                    if (email && email != "") {
+                        getUser.email = email
+                    }
+                    let data1 = {}
+                    data1.dictionary = await UsersModel.findOneAndUpdate({ user_id: user_id }, { $set: getUser },{new: true})
+                    res.json({ code: 200, success: true, message: 'login successfully', data: data1 })
+                }
             } else {
                 res.json({ code: 404, success: false, message: 'Email is not register', })
             }

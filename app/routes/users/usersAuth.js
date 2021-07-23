@@ -12,7 +12,7 @@ const validationData= require('../../middlewares/FrontendValidator');
 
 router.post('/sign-up',validationData.signUp,  user_controller.signUp);
 router.post('/login',validationData.login, user_controller.login)
-
+router.put('/update-profile',validationData.updateProfile, user_controller.updateProfile)
 
 
 

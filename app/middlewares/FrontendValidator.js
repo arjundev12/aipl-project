@@ -9,7 +9,7 @@ class FrontEntValidator {
             signUp: this.signUp.bind(this),
             verifyOtp: this.verifyOtp.bind(this),
             login: this.login.bind(this),
-            update: this.update.bind(this),
+            updateProfile: this.updateProfile.bind(this),
             submitReferral: this.submitReferral.bind(this),
             verifyforgot: this.verifyforgot.bind(this),
             setForgotPass: this.setForgotPass.bind(this),
@@ -57,12 +57,12 @@ class FrontEntValidator {
             const errors = await this._validationErrorsFormat(req);
             if (errors) {
                 // return res.json({ code : 422 ,success: false, message: errors[0] });
-                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+                return res.json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
             } else {
                 return next();
             }
         } else {
-            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+            res.json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
         }
         }else{
             if (Object.keys(req.body).length <= 16) {
@@ -87,15 +87,67 @@ class FrontEntValidator {
             const errors = await this._validationErrorsFormat(req);
             if (errors) {
                 // return res.json({ code : 422 ,success: false, message: errors[0] });
-                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+                return res.json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
             } else {
                 return next();
             }
         } else {
-            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+            res.json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
         } 
         }
     }
+    async login (req, res, next) {
+        // return next();
+        if (Object.keys(req.body).length <=4) {
+                req.checkBody({
+                    user_id: {
+                        notEmpty: true,
+                        errorMessage: { "field_name": "user_id", "error_msg": 'user_id is required' },
+                    },
+                    password: {
+                        notEmpty: true,
+                        errorMessage: { "field_name": "password", "error_msg": 'password is required' },
+                    },
+                    
+                })
+            const errors = await this._validationErrorsFormat(req);
+            if (errors) {
+                // return res.json({ code : 422 ,success: false, message: errors[0] });
+                return res.json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+            } else {
+                return next();
+            }
+        } else {
+            res.json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+        }
+    }
+    async updateProfile (req, res, next) {
+        // return next();
+        if (Object.keys(req.body).length <=11) {
+                req.checkBody({
+                    user_id: {
+                        notEmpty: true,
+                        errorMessage: { "field_name": "user_id", "error_msg": 'user_id is required' },
+                    },
+                    social_type: {
+                        notEmpty: true,
+                        errorMessage: { "field_name": "social_type", "error_msg": 'social_type is required' },
+                    }
+                    
+                })
+            const errors = await this._validationErrorsFormat(req);
+            if (errors) {
+                // return res.json({ code : 422 ,success: false, message: errors[0] });
+                return res.json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+            } else {
+                return next();
+            }
+        } else {
+            res.json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+        }
+    }
+    
+    ////////////////////////////////////////////////////////////////////////end ba panal/////////////////////////////////////////////
     async verifyOtp (req, res, next) {
         // return next();
         if (Object.keys(req.body).length <=2) {
@@ -128,12 +180,12 @@ class FrontEntValidator {
             const errors = await this._validationErrorsFormat(req);
             if (errors) {
                 // return res.json({ code : 422 ,success: false, message: errors[0] });
-                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+                return res.json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
             } else {
                 return next();
             }
         } else {
-            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+            res.json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
         }
     }
     async verifyforgot (req, res, next) {
@@ -168,12 +220,12 @@ class FrontEntValidator {
             const errors = await this._validationErrorsFormat(req);
             if (errors) {
                 // return res.json({ code : 422 ,success: false, message: errors[0] });
-                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+                return res.json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
             } else {
                 return next();
             }
         } else {
-            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+            res.json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
         }
     }
     async setForgotPass (req, res, next) {
@@ -202,81 +254,15 @@ class FrontEntValidator {
             const errors = await this._validationErrorsFormat(req);
             if (errors) {
                 // return res.json({ code : 422 ,success: false, message: errors[0] });
-                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+                return res.json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
             } else {
                 return next();
             }
         } else {
-            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+            res.json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
         }
     }
-    async login (req, res, next) {
-        // return next();
-        if (Object.keys(req.body).length <=4) {
-                req.checkBody({
-                    user_id: {
-                        notEmpty: true,
-                        errorMessage: { "field_name": "user_id", "error_msg": 'user_id is required' },
-                    },
-                    password: {
-                        notEmpty: true,
-                        errorMessage: { "field_name": "password", "error_msg": 'password is required' },
-                    },
-                    
-                })
-            const errors = await this._validationErrorsFormat(req);
-            if (errors) {
-                // return res.json({ code : 422 ,success: false, message: errors[0] });
-                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
-            } else {
-                return next();
-            }
-        } else {
-            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
-        }
-    }
-    async update (req, res, next) {
-        // return next();
-        if (Object.keys(req.body).length <=11) {
-                req.checkBody({
-                    _id: {
-                        notEmpty: true,
-                        errorMessage: { "field_name": "_id", "error_msg": '_id is required' },
-                    },
-                    // email: {
-                    //     notEmpty: true,
-                    //     errorMessage: { "field_name": "email", "error_msg": 'email is required' },
-                    // },
-                    // name: {
-                    //     notEmpty: true,
-                    //     errorMessage: { "field_name": "name", "error_msg": 'name is required' },
-                    // },
-                    // number: {
-                    //     notEmpty: true,
-                    //     errorMessage: { "field_name": "number", "error_msg": 'number is required' },
-                    // },
-                    // username: {
-                    //     notEmpty: true,
-                    //     errorMessage: { "field_name": "username", "error_msg": 'username is required' },
-                    // },
-                    login_type: {
-                        notEmpty: true,
-                        errorMessage: { "field_name": "login_type", "error_msg": 'login_type is required' },
-                    },
-                    
-                })
-            const errors = await this._validationErrorsFormat(req);
-            if (errors) {
-                // return res.json({ code : 422 ,success: false, message: errors[0] });
-                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
-            } else {
-                return next();
-            }
-        } else {
-            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
-        }
-    }
-    
+   
     async submitReferral (req, res, next) {
         // return next();
         if (Object.keys(req.body).length <=3) {
@@ -298,12 +284,12 @@ class FrontEntValidator {
             const errors = await this._validationErrorsFormat(req);
             if (errors) {
                 // return res.json({ code : 422 ,success: false, message: errors[0] });
-                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+                return res.json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
             } else {
                 return next();
             }
         } else {
-            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+            res.json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
         }
     }
     ///////////////////////////////////////////////////////////
@@ -320,12 +306,12 @@ class FrontEntValidator {
             const errors = await this._validationErrorsFormat(req);
             if (errors) {
                 // return res.json({ code : 422 ,success: false, message: errors[0] });
-                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+                return res.json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
             } else {
                 return next();
             }
         } else {
-            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+            res.json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
         }
     }
     async chekRedditUserName (req, res, next) {
@@ -341,12 +327,12 @@ class FrontEntValidator {
             const errors = await this._validationErrorsFormat(req);
             if (errors) {
                 // return res.json({ code : 422 ,success: false, message: errors[0] });
-                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+                return res.json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
             } else {
                 return next();
             }
         } else {
-            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+            res.json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
         }
     }
 
@@ -372,12 +358,12 @@ class FrontEntValidator {
             const errors = await this._validationErrorsFormat(req);
             if (errors) {
                 // return res.json({ code : 422 ,success: false, message: errors[0] });
-                return res.status(422).json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
+                return res.json({ code: 422, success: false, message: "Resolve these errors", errors: errors });
             } else {
                 return next();
             }
         } else {
-            res.status(422).json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
+            res.json({ code: 422, success: false, message: "Please send proper parameters", errors: null })
         }
     }
 
